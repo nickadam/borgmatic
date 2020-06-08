@@ -1,0 +1,26 @@
+version: '3.5'
+services:
+  borgmatic:
+    image: nickadam/borgmatic:1.0
+    build: .
+    environment:
+      BORGMATIC_CONFIG: |
+        location:
+            source_directories:
+                - /data
+            repositories:
+                - /backup
+        retention:
+            keep_daily: 14
+      BORGMATIC_CRON: |
+        0 3 * * * root PATH=$$PATH:/usr/bin:/usr/local/bin /usr/bin/borgmatic --syslog-verbosity 1
+    volumes:
+    - type: volume
+      source: data
+      target: /data
+    - type: volume
+      source: backup
+      target: /backup
+volumes:
+  data:
+  backup:
